@@ -39,23 +39,33 @@ const MORSE_TABLE = {
 
 function decode(expr) {
     if (typeof (expr) !== 'string') throw Error;
-    let words;
 
-    
+    let words;
     if(expr.includes("**********")) words = expr.split("**********")
     else words = expr
-    let res = "";
 
-    for (let i = 0; i < words.length; i++) {
-        words[i] = words[i].replace(/00/g, "").replace(/10/g, ".").replace(/11/g, "-").replace(/\*\*\*\*\*\*\*\*\*\*/g, " ");
-        for (res in MORSE_TABLE) {
-          if (res == words[i]) {
-            words[i] = MORSE_TABLE[res];
-          }
-        }
-      }
-      return words.join(""); // возвращаем из массива элементов строку
+    let result = [];
+
+    if (Array.isArray(words)) for (const word of words) {    
+         result.push(decodeWord(word));
     }
+    else result.push(decodeWord(words)); 
+        
+    function decodeWord(str) {
+        let letters = str.match(/\d\d\d\d\d\d\d\d\d\d/g);
+        let newWord = "";
+        for (const letter of letters) {
+
+            let currentLetter = "";
+            let digits = String.prototype.match.call(letter, /\d\d/g);
+
+            currentLetter += digits.filter(el => el !== "00").map(el => el === "10" ? "." : "-").join('');
+            newWord += MORSE_TABLE[currentLetter];
+        }
+        return newWord;
+    }
+    return result.join(" ");
+}    
 
 
 module.exports = {
