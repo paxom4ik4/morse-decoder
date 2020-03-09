@@ -38,8 +38,25 @@ const MORSE_TABLE = {
 };
 
 function decode(expr) {
-    // write your solution here
-}
+    if (typeof (expr) !== 'string') throw Error;
+    let words;
+
+    
+    if(expr.includes("**********")) words = expr.split("**********")
+    else words = expr
+    let res = "";
+
+    for (let i = 0; i < words.length; i++) {
+        words[i] = words[i].replace(/00/g, "").replace(/10/g, ".").replace(/11/g, "-").replace(/\*\*\*\*\*\*\*\*\*\*/g, " ");
+        for (res in MORSE_TABLE) {
+          if (res == words[i]) {
+            words[i] = MORSE_TABLE[res];
+          }
+        }
+      }
+      return words.join(""); // возвращаем из массива элементов строку
+    }
+
 
 module.exports = {
     decode
